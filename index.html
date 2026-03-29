@@ -181,15 +181,17 @@ body {
   display: flex; align-items: center; justify-content: center; z-index: 20;
 }
 @media (max-width: 480px) {
-  /* Bottoni principali in colonna */
-  #btn-row-main {
-    display: flex !important;
-    flex-direction: column !important;  /* uno sotto l'altro */
-    align-items: center !important;     /* centrati orizzontalmente */
-    gap: 14px !important;               /* spazio tra i bottoni */
-    bottom: 70px !important;            /* distanza dal fondo */
-    left: 50% !important;
-    transform: translateX(-50%) !important;
+  /* Bottone "Create your bouquet" centrato e testo perfetto */
+  #btn-create-bouquet {
+    width: 95% !important;               /* più largo per avere spazio */
+    padding: 16px 28px !important;       /* più spazio verticale */
+    display: flex !important;            
+    justify-content: center !important;  /* centra testo orizzontalmente */
+    align-items: center !important;      /* centra testo verticalmente */
+    text-align: center !important;       
+    line-height: 1.4 !important;         /* centratura verticale extra */
+    margin: 0 auto !important;           /* centrato nel layout */
+    border-radius: 50px !important;      /* bordi arrotondati come gli altri */
   }
 
   .main-btn {
