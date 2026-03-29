@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Everyone's garden!🌸</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  width: 100%; height: 100%;
+  font-family: 'Segoe UI', sans-serif;
+  background: #0d1b0a;
+  overflow: hidden;
+}
+#prato-wrap {
+  position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+}
+#prato-clip {
+  position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+  overflow: hidden;
+}
+body {
+  background-image: url("prato.png");
+  background-size: cover;       /* riempie tutto */
+  background-repeat: no-repeat; /* evita ripetizioni */
+  background-position: center;  /* centra */
+}
+
+#fiori-layer {
+  position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+  pointer-events: none;
+}
+#btn-row-main {
+  position: absolute; bottom: 28px; left: 50%; transform: translateX(-50%);
+  display: flex; gap: 14px; z-index: 10; white-space: nowrap;
+}
+.main-btn {
+  background: #ffffff;
+  border: 2.5px solid #2a5c10;
+  color: #2a5c10;
+  font-size: 15px;
+  font-weight: 700;
+  padding: 12px 28px;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 18px rgba(0,0,0,0.25);
+}
+
+.main-btn:hover {
+  background: #f5fff0;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 26px rgba(0,0,0,0.3);
+}
+#sync-bar {
+  position: absolute; top: 16px; left: 50%; transform: translateX(-50%);
+  font-size: 12px; color: rgba(255,255,255,0.9);
+  background: rgba(0,0,0,0.3); border-radius: 20px; padding: 3px 14px;
+  z-index: 10; display: flex; align-items: center; gap: 7px;
+}
+#sync-dot { width: 8px; height: 8px; border-radius: 50%; background: #888; transition: background 0.4s; }
+#sync-dot.on { background: #4caf50; }
+#sync-dot.saving { background: #ff9800; animation: blink .5s infinite alternate; }
+@keyframes blink { to { opacity: .25; } }
+#bouquet-hint {
+  position: absolute; top: 16px; left: 18px; font-size: 13px; color: #fff;
+  background: rgba(160,80,0,0.82); border-radius: 20px; padding: 5px 15px;
+  z-index: 10; display: none;
+}
+#tooltip {
+  position: absolute; background: rgba(20,35,10,0.88); color: #e8f5d0;
+  font-size: 13px; font-weight: 500; padding: 5px 14px; border-radius: 20px;
+  pointer-events: none; opacity: 0; transition: opacity 0.2s; white-space: nowrap;
+  z-index: 30; transform: translateX(-50%); border: 1px solid rgba(255,255,255,0.15);
+}
+/* OVERLAY */
+.overlay {
+  display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+  background: rgba(5,15,5,0.72); z-index: 100;
+  align-items: center; justify-content: center; backdrop-filter: blur(4px);
+}
+.overlay.show { display: flex; }
+/* LAVAGNETTA */
+#lavagnetta {
+  background: #fff; border-radius: 22px; padding: 24px; width: 370px; max-width: 95vw;
+  box-shadow: 0 20px 70px rgba(0,0,0,0.45); display: flex; flex-direction: column; gap: 14px;
+}
+#lav-title { font-size: 17px; font-weight: 700; color: #2a5c10; text-align: center; }
+#nome-input {
+  width: 100%; padding: 10px 14px; border: 1.5px solid #b5d98a; border-radius: 10px;
+  font-size: 14px; color: #333; outline: none; transition: border-color 0.2s;
+}
+#nome-input:focus { border-color: #3d7a1e; }
+#palette { display: flex; gap: 9px; justify-content: center; flex-wrap: wrap; }
+.color-btn {
+  width: 30px; height: 30px; border-radius: 50%; border: 2.5px solid transparent;
+  cursor: pointer; transition: transform 0.15s;
+}
+.color-btn:hover { transform: scale(1.2); }
+.color-btn.selected { border-color: #222; transform: scale(1.15); }
+#canvas-wrap { display: flex; justify-content: center; }
+#draw-canvas {
+  border: 1.5px solid #cce0a0; border-radius: 12px; cursor: crosshair;
+  background: #f6fced; display: block; touch-action: none;
+}
+#hint-msg { font-size: 12px; color: #888; text-align: center; min-height: 16px; }
+#btn-row { display: flex; gap: 10px; }
+#btn-cancel {
+  flex: 1; padding: 10px; border: 1.5px solid #ccc; border-radius: 10px;
+  background: transparent; color: #666; cursor: pointer; font-size: 14px;
+}
+#btn-cancel:hover { background: #f5f5f5; }
+#btn-ok {
+  flex: 2; padding: 10px; border: none; border-radius: 10px;
+  background: #3d7a1e; color: #fff; cursor: pointer; font-size: 14px; font-weight: 600;
+  opacity: 0.35; pointer-events: none; transition: opacity 0.2s;
+}
+#btn-ok.ready { opacity: 1; pointer-events: auto; }
+#btn-ok.ready:hover { background: #2f6015; }
+/* BOUQUET PANEL */
+#bouquet-panel {
+  background: #fff; border-radius: 24px; padding: 28px; width: 560px; max-width: 96vw;
+  box-shadow: 0 20px 80px rgba(0,0,0,0.5); display: flex; flex-direction: column; align-items: center; gap: 16px;
+}
+#bouquet-title { font-size: 20px; font-weight: 700; color: #2a5c10; }
+#bouquet-canvas-wrap {
+  /* sfondo a scacchi per mostrare trasparenza */
+#bouquet-canvas-wrap {
+  /* Rimosso lo sfondo a scacchi */
+  background: transparent; 
+  border-radius: 14px; 
+  overflow: hidden; 
+  display: inline-block;
+}
+  border-radius: 14px; overflow: hidden; display: inline-block;
+}
+#bouquet-canvas { display: block; }
+#bouquet-msg-input {
+  width: 100%; padding: 11px 15px; border: 1.5px solid #b5d98a; border-radius: 10px;
+  font-size: 15px; color: #333; outline: none; resize: none; font-family: inherit;
+}
+#bouquet-msg-input:focus { border-color: #3d7a1e; }
+#bouquet-btns { display: flex; gap: 12px; width: 100%; }
+#btn-bouquet-close {
+  flex: 1; padding: 11px; border: 1.5px solid #ccc; border-radius: 10px;
+  background: transparent; color: #666; cursor: pointer; font-size: 14px;
+}
+#btn-bouquet-close:hover { background: #f5f5f5; }
+#btn-bouquet-save {
+  flex: 2; padding: 11px; border: none; border-radius: 10px;
+  background: #c07a10; color: #fff; cursor: pointer; font-size: 14px; font-weight: 700;
+}
+#btn-bouquet-save:hover { background: #a06208; }
+/* FIORI ANIMAZIONI */
+@keyframes bloom {
+  0%   { opacity: 0; transform: scale(0) rotate(-20deg); }
+  65%  { opacity: 1; transform: scale(1.18) rotate(5deg); }
+  100% { opacity: 1; transform: scale(1) rotate(0deg); }
+}
+@keyframes sway {
+  0%, 100% { transform: rotate(-9deg); }
+  50%       { transform: rotate(9deg); }
+}
+.fiore-unit {
+  position: absolute; display: flex; flex-direction: column; align-items: center;
+  pointer-events: auto; cursor: pointer; transform-origin: bottom center;
+  animation: sway 2s ease-in-out infinite;
+}
+.fiore-img {
+  display: block; z-index: 2;
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.28));
+  animation: bloom 0.8s cubic-bezier(0.34,1.56,0.64,1) forwards;
+}
+/* gambo: overlap negativo per toccare i petali */
+.fiore-stem-svg { display: block; z-index: 1; margin-top: -38px; }
+.fiore-unit.sel-bouq { filter: drop-shadow(0 0 14px rgba(255,200,0,0.95)); }
+.fiore-unit.sel-bouq::after {
+  content: '✓'; position: absolute; top: -6px; right: -6px;
+  background: #f4a200; color: #fff; border-radius: 50%;
+  width: 22px; height: 22px; font-size: 13px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center; z-index: 20;
+}
+</style>
+</head>
+<body>
+
+<div id="prato-wrap">
+  <div id="prato-clip">
+    <div id="prato-bg"></div>
+    <div id="fiori-layer"></div>
+  </div>
+  <div id="contatore">0 / 30</div>
+  <div id="sync-bar"><span id="sync-dot"></span><span id="sync-label">Connecting…</span></div>
+  <div id="bouquet-hint">💐 Click 5 flowers (<span id="bouquet-count">0</span>/5)</div>
+  <div id="tooltip"></div>
+  <div id="btn-row-main">
+    <button class="main-btn" id="btn-add">🌸 Add your flower</button>
+    <button class="main-btn bouq-btn" id="btn-bouquet-mode">💐 Create your bouquet</button>
+  </div>
+</div>
+
+<!-- DRAW OVERLAY -->
+<div class="overlay" id="draw-overlay">
+  <div id="lavagnetta">
+    <div id="lav-title">🌼 Draw your flower</div>
+    <input id="nome-input" type="text" placeholder="Your name..." maxlength="24"/>
+    <div id="palette"></div>
+    <div id="canvas-wrap">
+      <canvas id="draw-canvas" width="300" height="220"></canvas>
+    </div>
+    <div id="hint-msg">Draw your flower, then click OK!</div>
+    <div id="btn-row">
+      <button id="btn-cancel">Cancel</button>
+      <button id="btn-ok">OK 🌱</button>
+    </div>
+  </div>
+</div>
+
+<!-- BOUQUET OVERLAY -->
+<div class="overlay" id="bouquet-overlay">
+  <div id="bouquet-panel">
+    <div id="bouquet-title">💐 Your Bouquet</div>
+    <div id="bouquet-canvas-wrap">
+      <canvas id="bouquet-canvas" width="480" height="460"></canvas>
+    </div>
+    <textarea id="bouquet-msg-input" rows="2" placeholder="Leave a message... 🌸"></textarea>
+    <div id="bouquet-btns">
+      <button id="btn-bouquet-close">Close</button>
+      <button id="btn-bouquet-save">⬇ Save bouquet</button>
+    </div>
+  </div>
+</div>
+
+<!-- Google Fonts per scrittura elegante -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+
+<!-- Firebase compat -->
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyA7Hhh3uFje3QotzmTwEouacI_fGLf6bh0",
+  authDomain: "pratofiorito-4fbb1.firebaseapp.com",
+  databaseURL: "https://pratofiorito-4fbb1-default-rtdb.firebaseio.com/",
+  projectId: "pratofiorito-4fbb1",
+  storageBucket: "pratofiorito-4fbb1.firebasestorage.app",
+  messagingSenderId: "806678212963",
+  appId: "1:806678212963:web:29bf90cb0e395ef12da356"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+const flowersRef = db.ref('fiori');
+
+const MAX    = 30;
+const BOUQ_N = 5;
+const COLORS = ['#e63946','#f4a261','#e9c46a','#2a9d8f','#457b9d','#9b5de5',
+                '#f72585','#06d6a0','#ff9f1c','#845ec2','#ff6b6b','#0096c7'];
+const MAZZO_SRC = './letter.png'; // usa il PNG locale nella stessa cartella
+
+let flowers        = [];
+let drawing        = false;
+let currentColor   = COLORS[0];
+
+let hasDrawn       = false;
+let ghostVisible   = true;
+let lastX, lastY;
+let bouquetMode    = false;
+let bouquetSelected = [];
+
+const drawOverlay    = document.getElementById('draw-overlay');
+const bouquetOverlay = document.getElementById('bouquet-overlay');
+const canvas         = document.getElementById('draw-canvas');
+const ctx            = canvas.getContext('2d');
+const btnOk          = document.getElementById('btn-ok');
+const btnCancel      = document.getElementById('btn-cancel');
+const btnAdd         = document.getElementById('btn-add');
+const btnBouqMode    = document.getElementById('btn-bouquet-mode');
+const nomeInput      = document.getElementById('nome-input');
+const fioriLayer     = document.getElementById('fiori-layer');
+const pratoClip      = document.getElementById('prato-clip');
+const contatore      = document.getElementById('contatore');
+const tooltip        = document.getElementById('tooltip');
+const palette        = document.getElementById('palette');
+const hintMsg        = document.getElementById('hint-msg');
+const bouquetHint    = document.getElementById('bouquet-hint');
+const bouquetCountEl = document.getElementById('bouquet-count');
+const bouquetCanvas  = document.getElementById('bouquet-canvas');
+const bctx           = bouquetCanvas.getContext('2d');
+const bouquetMsg     = document.getElementById('bouquet-msg-input');
+const btnBClose      = document.getElementById('btn-bouquet-close');
+const btnBSave       = document.getElementById('btn-bouquet-save');
+const syncDot        = document.getElementById('sync-dot');
+const syncLabel      = document.getElementById('sync-label');
+
+// Sync UI
+function setConnected() { syncDot.className='on';     syncLabel.textContent='live 🌿'; }
+function setSaving()    { syncDot.className='saving'; syncLabel.textContent='saving…'; }
+function setError()     { syncDot.className='';       syncLabel.textContent='offline'; }
+
+db.ref('.info/connected').on('value', snap => {
+  if (snap.val() === true) setConnected(); else setError();
+});
+
+// Palette
+COLORS.forEach((c, i) => {
+  const btn = document.createElement('div');
+  btn.className = 'color-btn' + (i === 0 ? ' selected' : '');
+  btn.style.background = c;
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    currentColor = c;
+  });
+  palette.appendChild(btn);
+});
+
+// Ghost — solo la testa del fiore, niente gambo
+function drawGhost() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  if (!ghostVisible) return;
+
+  ctx.save(); 
+  // Se è troppo invisibile, alza 0.33 a 0.5 o 0.6
+  ctx.globalAlpha = 0.09; 
+
+  const cx = 150, cy = 115;
+  ctx.fillStyle = '#3d7a1e';
+
+  // MODIFICA: i < 6 per disegnare tutti i petali
+  for (let i = 0; i < 6; i++) {
+    const a = (i / 6) * Math.PI * 2; 
+    ctx.beginPath();
+    ctx.arc(cx + Math.cos(a) * 46, cy + Math.sin(a) * 46, 24, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  // Il centro del fiore
+  ctx.beginPath(); 
+  ctx.arc(cx, cy, 22, 0, Math.PI * 2); 
+  ctx.fill();
+
+  ctx.restore();
+}
+
+function getPos(e) {
+  const r = canvas.getBoundingClientRect();
+  const s = e.touches ? e.touches[0] : e;
+  return { x: s.clientX - r.left, y: s.clientY - r.top };
+}
+canvas.addEventListener('mousedown', e => {
+  drawing = true; const p=getPos(e); lastX=p.x; lastY=p.y;
+  if (ghostVisible) { ghostVisible=false; ctx.clearRect(0,0,canvas.width,canvas.height); }
+});
+canvas.addEventListener('touchstart', e => {
+  e.preventDefault(); drawing=true; const p=getPos(e); lastX=p.x; lastY=p.y;
+  if (ghostVisible) { ghostVisible=false; ctx.clearRect(0,0,canvas.width,canvas.height); }
+},{passive:false});
+function onMove(e) {
+  if (!drawing) return;
+  if (e.touches) e.preventDefault();
+  const p=getPos(e);
+  ctx.beginPath(); ctx.strokeStyle=currentColor; ctx.lineWidth=10;
+  ctx.lineCap='round'; ctx.lineJoin='round';
+  ctx.moveTo(lastX,lastY); ctx.lineTo(p.x,p.y); ctx.stroke();
+  lastX=p.x; lastY=p.y; hasDrawn=true; checkReady();
+}
+canvas.addEventListener('mousemove', onMove);
+canvas.addEventListener('touchmove', onMove, {passive:false});
+function stopDraw() { drawing=false; }
+canvas.addEventListener('mouseup', stopDraw);
+canvas.addEventListener('mouseleave', stopDraw);
+canvas.addEventListener('touchend', stopDraw);
+
+function checkReady() {
+  if (hasDrawn && nomeInput.value.trim()) {
+    btnOk.classList.add('ready');
+    hintMsg.textContent='Great! Click OK to plant it 🌿';
+  } else if (hasDrawn) {
+    hintMsg.textContent='Enter your name!';
+  }
+}
+nomeInput.addEventListener('input', checkReady);
+
+btnAdd.addEventListener('click', () => {
+  if (bouquetMode) return;
+  drawOverlay.classList.add('show');
+  hasDrawn=false; ghostVisible=true;
+  nomeInput.value=''; btnOk.classList.remove('ready');
+  hintMsg.textContent='Draw your flower, then click OK!';
+  drawGhost();
+});
+btnCancel.addEventListener('click', () => drawOverlay.classList.remove('show'));
+
+btnOk.addEventListener('click', () => {
+  const nome = nomeInput.value.trim();
+  if (!nome || !hasDrawn) return;
+  const imgData = canvas.toDataURL('image/png', 0.7);
+  drawOverlay.classList.remove('show');
+
+  const pw=pratoClip.offsetWidth, ph=pratoClip.offsetHeight;
+  const data = {
+    nome, img: imgData,
+    x:       60 + Math.random()*(pw-140),
+    yGround: ph*0.44 + 15 + Math.random()*(ph*0.44),
+    flowerW: 85 + Math.random()*35,
+    stemH:   38 + Math.random()*28,
+    dur:     1.6 + Math.random()*1.6,
+    del:     Math.random()*2.5,
+    bend:    (Math.random()-0.5)*10,
+    ts:      firebase.database.ServerValue.TIMESTAMP
+  };
+  setSaving();
+  flowersRef.push(data)
+    .then(() => setConnected())
+    .catch(err => { console.error(err); setError(); });
+});
+
+// Firebase listeners
+flowersRef.limitToLast(MAX).on('child_added', snapshot => {
+  const data=snapshot.val(), key=snapshot.key;
+  if (!data || flowers.find(f=>f.key===key)) return;
+  renderFlower(data, key);
+});
+flowersRef.on('child_removed', snapshot => {
+  const key=snapshot.key;
+  const idx=flowers.findIndex(f=>f.key===key);
+  if (idx>=0) { flowers[idx].el.remove(); flowers.splice(idx,1); contatore.textContent=flowers.length+' / '+MAX; }
+});
+
+function renderFlower(data, key) {
+  if (flowers.length>=MAX) { const old=flowers.shift(); if(old.el) old.el.remove(); }
+  const { nome, img, x, yGround, flowerW, stemH, dur, del, bend } = data;
+  const NS='http://www.w3.org/2000/svg';
+
+  const unit=document.createElement('div');
+  unit.className='fiore-unit';
+  unit.style.left=x+'px';
+  // top: il gambo ha margin-top -12px, quindi compensiamo
+  unit.style.top=(yGround - stemH - flowerW + 12)+'px';
+  unit.style.animationDuration=dur+'s';
+  unit.style.animationDelay=del+'s';
+
+  const imgEl=document.createElement('img');
+  imgEl.className='fiore-img';
+  imgEl.src=img;
+  imgEl.style.width=flowerW+'px';
+  imgEl.style.height=flowerW+'px';
+
+  // Gambo SVG — margin-top: -12px fa sì che il top del gambo stia sotto i petali
+  const sv=document.createElementNS(NS,'svg');
+  sv.setAttribute('width','20');
+  sv.setAttribute('height',stemH);
+  sv.setAttribute('viewBox','0 0 20 '+stemH);
+  sv.classList.add('fiore-stem-svg');
+
+  const lfy=stemH*0.42, lfx=10+bend*0.4+9;
+  const lf=document.createElementNS(NS,'ellipse');
+  lf.setAttribute('cx',lfx); lf.setAttribute('cy',lfy);
+  lf.setAttribute('rx','9'); lf.setAttribute('ry','4.5');
+  lf.setAttribute('fill','#5cba2e');
+  lf.setAttribute('transform','rotate(-38 '+lfx+' '+lfy+')');
+
+  const path=document.createElementNS(NS,'path');
+  path.setAttribute('d','M10 0 C'+(10+bend)+' '+(stemH*0.35)+' '+(10-bend)+' '+(stemH*0.65)+' 10 '+stemH);
+  path.setAttribute('stroke','#4a9622'); path.setAttribute('stroke-width','5');
+  path.setAttribute('stroke-linecap','round'); path.setAttribute('fill','none');
+
+  sv.appendChild(lf); sv.appendChild(path);
+  unit.appendChild(imgEl); unit.appendChild(sv);
+  fioriLayer.appendChild(unit);
+
+  unit.addEventListener('mouseenter', () => {
+    if (bouquetMode) return;
+    tooltip.textContent='🌸 '+nome;
+    const wr=unit.getBoundingClientRect();
+    const pr=pratoClip.getBoundingClientRect();
+    tooltip.style.left=(wr.left+wr.width/2-pr.left)+'px';
+    tooltip.style.top=(wr.top-pr.top-42)+'px';
+    tooltip.style.opacity='1';
+  });
+  unit.addEventListener('mouseleave',()=>{ tooltip.style.opacity='0'; });
+
+  const fObj={key,el:unit,img,nome};
+  unit.addEventListener('click',()=>{
+    if (!bouquetMode) return;
+    const idx=bouquetSelected.findIndex(f=>f.el===unit);
+    if (idx>=0) { bouquetSelected.splice(idx,1); unit.classList.remove('sel-bouq'); }
+    else if (bouquetSelected.length<BOUQ_N) {
+      bouquetSelected.push(fObj); unit.classList.add('sel-bouq');
+      if (bouquetSelected.length===BOUQ_N) showBouquet();
+    }
+    bouquetCountEl.textContent=bouquetSelected.length;
+  });
+
+  flowers.push(fObj);
+  contatore.textContent=flowers.length+' / '+MAX;
+}
+
+// Bouquet mode
+btnBouqMode.addEventListener('click',()=>{
+  bouquetMode=!bouquetMode; bouquetSelected=[];
+  bouquetCountEl.textContent='0';
+  document.querySelectorAll('.fiore-unit').forEach(u=>u.classList.remove('sel-bouq'));
+  if (bouquetMode) {
+    bouquetHint.style.display='block'; btnBouqMode.textContent='✕ Cancel';
+    btnAdd.style.opacity='0.4'; btnAdd.style.pointerEvents='none';
+  } else {
+    bouquetHint.style.display='none'; btnBouqMode.textContent='💐 Create your bouquet';
+    btnAdd.style.opacity='1'; btnAdd.style.pointerEvents='auto';
+  }
+});
+
+function showBouquet() {
+  bouquetMode=false; bouquetHint.style.display='none';
+  btnBouqMode.textContent='💐 Create your bouquet';
+  btnAdd.style.opacity='1'; btnAdd.style.pointerEvents='auto';
+  document.querySelectorAll('.fiore-unit').forEach(u=>u.classList.remove('sel-bouq'));
+  bouquetMsg.value='';
+  renderBouquet().then(()=>bouquetOverlay.classList.add('show'));
+}
+
+function loadImg(src) {
+  return new Promise(res=>{ const i=new Image(); i.onload=()=>res(i); i.src=src; });
+}
+
+// Carica il font Dancing Script come FontFace per usarlo nel canvas
+let dancingScriptLoaded = false;
+async function ensureFont() {
+  if (dancingScriptLoaded) return;
+  try {
+    await document.fonts.load('700 20px "Dancing Script"');
+    dancingScriptLoaded = true;
+  } catch(e) {}
+}
+
+async function renderBouquet() {
+  await ensureFont();
+  const W=bouquetCanvas.width, H=bouquetCanvas.height;
+  bctx.clearRect(0,0,W,H);
+  // canvas TRASPARENTE — nessun fillRect, così il PNG mantiene l'alpha
+
+  const mazzoImg=await loadImg(MAZZO_SRC);
+  // Scala il mazzo per riempire il canvas mantenendo le proporzioni
+  const mScale=Math.min(W/mazzoImg.naturalWidth, H/mazzoImg.naturalHeight);
+  const mW=mazzoImg.naturalWidth*mScale, mH=mazzoImg.naturalHeight*mScale;
+  const mX=(W-mW)/2, mY=(H-mH)/2;
+  bctx.drawImage(mazzoImg,mX,mY,mW,mH);
+
+  // Zona verde (teal) del mazzo — coordinate calcolate dall'analisi dell'immagine:
+  // teal x: 37.4%..81.1%, y: 25.4%..64.2% (relativi all'immagine originale)
+  // Le trasliamo alle coordinate canvas dopo la scala
+  const tealLeft  = mX + mW * 0.374;
+  const tealRight = mX + mW * 0.811;
+  const tealTop   = mY + mH * 0.254;
+  const tealBot   = mY + mH * 0.642;
+  const tW = tealRight - tealLeft;
+  const tH = tealBot   - tealTop;
+
+  // 5 posizioni a ventaglio DENTRO la zona teal
+  const flowerSize = 130;
+  const positions = [
+    { cx: tealLeft + tW*0.18, cy: tealTop + tH*0.72 },  // sinistra bassa
+    { cx: tealLeft + tW*0.25, cy: tealTop + tH*0.35 },  // sinistra alta
+    { cx: tealLeft + tW*0.50, cy: tealTop + tH*0.18 },  // centro cima
+    { cx: tealLeft + tW*0.75, cy: tealTop + tH*0.45 },  // destra alta
+    { cx: tealLeft + tW*0.52, cy: tealTop + tH*0.80 },  // destra bassa
+  ];
+  const rots = [-0.32, -0.15, 0, 0.15, 0.32];
+
+  const imgs=await Promise.all(bouquetSelected.map(f=>loadImg(f.img)));
+  for(let i=0;i<imgs.length;i++){
+    bctx.save();
+    bctx.translate(positions[i].cx, positions[i].cy);
+    bctx.rotate(rots[i]);
+    bctx.shadowColor='rgba(0,0,0,0.22)'; bctx.shadowBlur=14; bctx.shadowOffsetY=5;
+    bctx.drawImage(imgs[i],-flowerSize/2,-flowerSize/2,flowerSize,flowerSize);
+    bctx.restore();
+  }
+}
+
+async function saveBouquet(){
+  await renderBouquet();
+  const msg=bouquetMsg.value.trim();
+
+  const finalCanvas=document.createElement('canvas');
+  finalCanvas.width=bouquetCanvas.width;
+  finalCanvas.height=bouquetCanvas.height;
+  const fctx=finalCanvas.getContext('2d');
+  fctx.drawImage(bouquetCanvas,0,0);
+
+  if(msg){
+    const W=finalCanvas.width;
+    await ensureFont();
+    fctx.save();
+    // Testo nella zona crema in cima — zona crema: y=0..34.9% dell'immagine
+    // Il canvas è alto H px, zona crema circa y 0..34%
+    // Scriviamo il testo centrato a circa y=16% del canvas
+    const textY = Math.round(finalCanvas.height * 0.14);
+    fctx.font = '700 32px "Dancing Script", cursive';
+    fctx.textAlign = 'center';
+    fctx.textBaseline = 'middle';
+    // Misura il testo per la pillola
+    const tw = fctx.measureText(msg).width;
+    // Pillola semitrasparente color crema
+    const pH=50, pW=tw+48, pX=W/2-pW/2, pY=textY-pH/2;
+   fctx.fillStyle='rgba(255,253,235,0.3)';
+    fctx.beginPath();
+    fctx.roundRect ? fctx.roundRect(pX,pY,pW,pH,16) : fctx.rect(pX,pY,pW,pH);
+    fctx.fill();
+    // Testo elegante
+    fctx.fillStyle='#3a2010';
+    fctx.fillText(msg, W/2, textY);
+    fctx.restore();
+  }
+
+  const link=document.createElement('a');
+  link.download='bouquet.png';
+  link.href=finalCanvas.toDataURL('image/png');
+  link.click();
+}
+
+btnBClose.addEventListener('click',()=>{
+  bouquetOverlay.classList.remove('show');
+  bouquetSelected=[]; bouquetCountEl.textContent='0';
+});
+btnBSave.addEventListener('click',saveBouquet);
+
+drawGhost();
+</script>
+</body>
+</html>
