@@ -181,19 +181,19 @@ body {
   display: flex; align-items: center; justify-content: center; z-index: 20;
 }
 @media (max-width: 480px) {
-  /* Bottone "Create your bouquet" centrato e testo perfetto */
-  #btn-create-bouquet {
-    width: 95% !important;               /* più largo per avere spazio */
-    padding: 16px 28px !important;       /* più spazio verticale */
-    display: flex !important;            
-    justify-content: center !important;  /* centra testo orizzontalmente */
-    align-items: center !important;      /* centra testo verticalmente */
-    text-align: center !important;       
-    line-height: 1.4 !important;         /* centratura verticale extra */
-    margin: 0 auto !important;           /* centrato nel layout */
-    border-radius: 50px !important;      /* bordi arrotondati come gli altri */
-  }
-
+/* Bottone "Create your bouquet" più largo e testo centrato */
+#btn-create-bouquet {
+  width: 100% !important;           /* prende tutta la larghezza disponibile */
+  max-width: 340px !important;      /* optional, mantiene un limite */
+  padding: 16px 20px !important;    /* più alto e comodo da cliccare */
+  display: flex !important;
+  justify-content: center !important; /* centra orizzontalmente il testo */
+  align-items: center !important;     /* centra verticalmente il testo */
+  text-align: center !important;
+  line-height: 1.4 !important;
+  margin: 0 auto !important;          /* centrato nel layout */
+  border-radius: 50px !important;     /* stesso stile degli altri bottoni */
+}
   .main-btn {
     width: 90% !important;            /* larghezza comoda su mobile */
     text-align: center !important;    
