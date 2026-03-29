@@ -180,95 +180,94 @@ body {
   width: 22px; height: 22px; font-size: 13px; font-weight: 700;
   display: flex; align-items: center; justify-content: center; z-index: 20;
 }
-/* === MOBILE VERSIONE (max-width 480px) === */
 @media (max-width: 480px) {
 
-  /* Bottoni principali più in alto, uno sopra l'altro */
+  /* Bottoni principali più in alto e più grandi */
   #btn-row-main {
-    bottom: 60px;       /* spazio dal fondo */
-    gap: 12px;
-    flex-direction: column;
-    align-items: center;
+    bottom: 60px !important;
+    gap: 12px !important;
+    flex-direction: column !important;
+    align-items: center !important;
   }
   .main-btn {
-    padding: 12px 24px; /* più grande e cliccabile */
-    font-size: 15px;    /* testo più leggibile */
-    width: 85%;         /* dentro lo schermo */
-    text-align: center;  /* centratura testo */
+    padding: 12px 24px !important;
+    font-size: 15px !important;
+    width: 85% !important;
+    text-align: center !important;
   }
 
   /* Lavagnetta ridimensionata */
   #lavagnetta {
-    width: 92vw;
-    max-width: 92vw;
-    padding: 18px;
+    width: 92vw !important;
+    max-width: 92vw !important;
+    padding: 18px !important;
   }
   #lav-title {
-    font-size: 16px;
-    text-align: center;
+    font-size: 16px !important;
+    text-align: center !important;
   }
 
-  /* Input e canvas */
-  #nome-input, #bouquet-msg-input {
-    font-size: 14px;
-  }
+  /* Input e canvas di disegno più alto */
   #draw-canvas {
     width: 280px !important;
-    height: 250px !important; /* più alto per disegno */
-    border-radius: 12px;
+    height: 250px !important; /* più alto */
+    border-radius: 12px !important;
+  }
+  #nome-input, #bouquet-msg-input {
+    font-size: 14px !important;
   }
 
   /* Palette più piccola */
   .color-btn {
-    width: 28px;
-    height: 28px;
+    width: 28px !important;
+    height: 28px !important;
   }
 
   /* Pulsanti nella lavagnetta */
   #btn-row button {
-    font-size: 14px;
-    padding: 9px 14px;
+    font-size: 14px !important;
+    padding: 9px 14px !important;
   }
 
   /* Overlay bouquet ridimensionato */
   #bouquet-panel {
-    width: 92vw;
-    max-width: 92vw;
-    padding: 20px;
+    width: 92vw !important;
+    max-width: 92vw !important;
+    padding: 20px !important;
   }
   #bouquet-title {
-    font-size: 18px;
-    text-align: center;
+    font-size: 18px !important;
+    text-align: center !important;
   }
   #bouquet-canvas {
     width: 320px !important;
     height: 300px !important;
   }
   #bouquet-msg-input {
-    font-size: 14px;
-    padding: 9px 12px;
+    font-size: 14px !important;
+    padding: 9px 12px !important;
   }
   #bouquet-btns button {
-    font-size: 14px;
-    padding: 9px 12px;
+    font-size: 14px !important;
+    padding: 9px 12px !important;
   }
 
   /* Tooltip più piccolo */
   #tooltip {
-    font-size: 12px;
-    padding: 4px 10px;
+    font-size: 12px !important;
+    padding: 4px 10px !important;
   }
 
   /* Sync bar più piccola */
   #sync-bar {
-    font-size: 11px;
-    padding: 2px 10px;
+    font-size: 11px !important;
+    padding: 2px 10px !important;
   }
 
   /* Bouquet hint più leggibile */
   #bouquet-hint {
-    font-size: 12px;
-    padding: 4px 10px;
+    font-size: 12px !important;
+    padding: 4px 10px !important;
   }
 }
 </style>
