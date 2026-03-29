@@ -182,93 +182,97 @@ body {
 }
 @media (max-width: 480px) {
 
-  /* Bottoni principali più in alto e più grandi */
+  /* === Bottoni principali più alti e grandi === */
   #btn-row-main {
-    bottom: 60px !important;
-    gap: 12px !important;
-    flex-direction: column !important;
+    bottom: 70px !important;        /* ancora più spazio dal fondo */
+    gap: 14px !important;           
+    flex-direction: column !important; 
     align-items: center !important;
   }
   .main-btn {
-    padding: 12px 24px !important;
-    font-size: 15px !important;
-    width: 85% !important;
+    padding: 14px 28px !important;  /* bottoni più grandi e comodi da toccare */
+    font-size: 16px !important;     
+    width: 90% !important;          /* larghezza più ampia sullo schermo */
     text-align: center !important;
+    line-height: 1.4 !important;    /* testo centrato verticalmente */
+    box-sizing: border-box !important;
   }
 
-  /* Lavagnetta ridimensionata */
+  /* === Lavagnetta ridimensionata === */
   #lavagnetta {
-    width: 92vw !important;
-    max-width: 92vw !important;
-    padding: 18px !important;
-  }
-  #lav-title {
-    font-size: 16px !important;
-    text-align: center !important;
-  }
-
-  /* Input e canvas di disegno più alto */
-  #draw-canvas {
-    width: 280px !important;
-    height: 250px !important; /* più alto */
-    border-radius: 12px !important;
-  }
-  #nome-input, #bouquet-msg-input {
-    font-size: 14px !important;
-  }
-
-  /* Palette più piccola */
-  .color-btn {
-    width: 28px !important;
-    height: 28px !important;
-  }
-
-  /* Pulsanti nella lavagnetta */
-  #btn-row button {
-    font-size: 14px !important;
-    padding: 9px 14px !important;
-  }
-
-  /* Overlay bouquet ridimensionato */
-  #bouquet-panel {
-    width: 92vw !important;
-    max-width: 92vw !important;
+    width: 95vw !important;
+    max-width: 95vw !important;
     padding: 20px !important;
   }
+  #lav-title {
+    font-size: 17px !important;
+    text-align: center !important;
+  }
+
+  /* === Input e canvas di disegno più grandi === */
+  #draw-canvas {
+    width: 320px !important;        /* più largo */
+    height: 280px !important;       /* più alto */
+    border-radius: 12px !important;
+    display: block !important;
+    margin: 0 auto !important;      /* centrato */
+  }
+  #nome-input, #bouquet-msg-input {
+    font-size: 15px !important;
+    padding: 10px 12px !important;
+  }
+
+  /* === Palette colori leggermente più piccola === */
+  .color-btn {
+    width: 30px !important;
+    height: 30px !important;
+  }
+
+  /* === Pulsanti dentro la lavagnetta === */
+  #btn-row button {
+    font-size: 15px !important;
+    padding: 10px 16px !important;
+  }
+
+  /* === Overlay bouquet ridimensionato === */
+  #bouquet-panel {
+    width: 95vw !important;
+    max-width: 95vw !important;
+    padding: 22px !important;
+  }
   #bouquet-title {
-    font-size: 18px !important;
+    font-size: 19px !important;
     text-align: center !important;
   }
   #bouquet-canvas {
-    width: 320px !important;
-    height: 300px !important;
+    width: 340px !important;
+    height: 320px !important;
+    display: block !important;
+    margin: 0 auto !important;
   }
   #bouquet-msg-input {
-    font-size: 14px !important;
-    padding: 9px 12px !important;
+    font-size: 15px !important;
+    padding: 10px 12px !important;
   }
   #bouquet-btns button {
-    font-size: 14px !important;
-    padding: 9px 12px !important;
+    font-size: 15px !important;
+    padding: 10px 14px !important;
   }
 
-  /* Tooltip più piccolo */
+  /* === Tooltip e sync bar più piccoli === */
   #tooltip {
     font-size: 12px !important;
     padding: 4px 10px !important;
   }
-
-  /* Sync bar più piccola */
   #sync-bar {
     font-size: 11px !important;
     padding: 2px 10px !important;
   }
-
-  /* Bouquet hint più leggibile */
   #bouquet-hint {
     font-size: 12px !important;
     padding: 4px 10px !important;
   }
+
 }
 </style>
 </head>
