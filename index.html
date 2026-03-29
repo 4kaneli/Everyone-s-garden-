@@ -180,52 +180,92 @@ body {
   width: 22px; height: 22px; font-size: 13px; font-weight: 700;
   display: flex; align-items: center; justify-content: center; z-index: 20;
 }
+/* === MOBILE VERSIONE (max-width 480px) === */
+@media (max-width: 480px) {
 
+  /* Bottoni principali più in alto, spazio dal fondo */
+  #btn-row-main {
+    bottom: 60px; /* aumenta lo spazio dal fondo */
+    gap: 10px;
+    flex-direction: column; /* metti i bottoni uno sopra l'altro */
+    align-items: center;
+  }
+  .main-btn {
+    padding: 10px 20px;
+    font-size: 14px;
+    width: 80%; /* bottoni più larghi ma dentro lo schermo */
+  }
 
-
-/* 🌱 MOBILE RESPONSIVE */
-@media (max-width: 900px) {
-  /* Bouquet panel canvas ridimensionato */
-  #bouquet-panel {
+  /* Lavagnetta ridimensionata */
+  #lavagnetta {
     width: 90vw;
+    max-width: 90vw;
     padding: 16px;
   }
-  #bouquet-canvas-wrap {
-    width: 100%;
-    height: auto;
+  #lav-title {
+    font-size: 16px;
   }
-  #bouquet-canvas {
-    width: 100% !important;
-    height: auto !important;
+  #nome-input, #bouquet-msg-input, #draw-canvas {
+    font-size: 13px;
   }
-#canvas-wrap {
-  width: 90vw;
-  height: calc(90vw * 0.73); /* 300/410 ≈ 0.73 per mantenere proporzioni */
-}
-#draw-canvas {
-  width: 100% !important;
-  height: 100% !important;   /* prende tutta l’altezza del wrap */
-  touch-action: none;
-}
-
-  /* Pulsanti principali sotto al prato */
- #btn-row-main {
-  bottom: 12vw;        /* più alto su mobile */
-  flex-direction: column;
-  gap: 10px;
-}
-  .main-btn {
-    width: 80vw;         /* più grandi e touch-friendly */
-    text-align: center;
+  #draw-canvas {
+    width: 260px !important;
+    height: 180px !important;
   }
 
-  /* Overlay lavagnetta */
-  #lavagnetta {
-    width: 95vw;
+  /* Palette più piccola */
+  .color-btn {
+    width: 25px;
+    height: 25px;
+  }
+
+  #btn-row button {
+    font-size: 13px;
+    padding: 8px 12px;
+  }
+
+  /* Overlay bouquet ridimensionato */
+  #bouquet-panel {
+    width: 90vw;
+    max-width: 90vw;
     padding: 18px;
   }
+  #bouquet-title {
+    font-size: 18px;
+  }
+  #bouquet-canvas {
+    width: 320px !important;
+    height: 300px !important;
+  }
+  #bouquet-msg-input {
+    font-size: 13px;
+    padding: 8px 10px;
+  }
+  #bouquet-btns button {
+    font-size: 13px;
+    padding: 8px 10px;
+  }
+
+  /* Tooltip più piccolo */
+  #tooltip {
+    font-size: 12px;
+    padding: 4px 10px;
+  }
+
+  /* Sync bar più piccola */
+  #sync-bar {
+    font-size: 11px;
+    padding: 2px 10px;
+  }
+
+  /* Bouquet hint più leggibile */
+  #bouquet-hint {
+    font-size: 12px;
+    padding: 4px 10px;
+  }
 
 }
+
 </style>
 </head>
 <body>
@@ -393,10 +433,7 @@ function drawGhost() {
 function getPos(e) {
   const r = canvas.getBoundingClientRect();
   const s = e.touches ? e.touches[0] : e;
-  // scala in base alle dimensioni effettive
-  const scaleX = canvas.width / r.width;
-  const scaleY = canvas.height / r.height;
-  return { x: (s.clientX - r.left) * scaleX, y: (s.clientY - r.top) * scaleY };
+  return { x: s.clientX - r.left, y: s.clientY - r.top };
 }
 canvas.addEventListener('mousedown', e => {
   drawing = true; const p=getPos(e); lastX=p.x; lastY=p.y;
@@ -586,56 +623,49 @@ async function ensureFont() {
 
 async function renderBouquet() {
   await ensureFont();
+  const W=bouquetCanvas.width, H=bouquetCanvas.height;
+  bctx.clearRect(0,0,W,H);
+  // canvas TRASPARENTE — nessun fillRect, così il PNG mantiene l'alpha
 
-  // Ottieni la larghezza del pannello e scala il canvas
-  const panel = document.getElementById('bouquet-panel');
-  const W = panel.clientWidth * 0.95; // lascia un po' di margine
-  const H = W * 0.95;                  // proporzioni quasi quadrate
-  bouquetCanvas.width = W;
-  bouquetCanvas.height = H;
+  const mazzoImg=await loadImg(MAZZO_SRC);
+  // Scala il mazzo per riempire il canvas mantenendo le proporzioni
+  const mScale=Math.min(W/mazzoImg.naturalWidth, H/mazzoImg.naturalHeight);
+  const mW=mazzoImg.naturalWidth*mScale, mH=mazzoImg.naturalHeight*mScale;
+  const mX=(W-mW)/2, mY=(H-mH)/2;
+  bctx.drawImage(mazzoImg,mX,mY,mW,mH);
 
-  bctx.clearRect(0, 0, W, H);
-
-  // Mazzo
-  const mazzoImg = await loadImg(MAZZO_SRC);
-  const mScale = Math.min(W / mazzoImg.naturalWidth, H / mazzoImg.naturalHeight);
-  const mW = mazzoImg.naturalWidth * mScale;
-  const mH = mazzoImg.naturalHeight * mScale;
-  const mX = (W - mW) / 2;
-  const mY = (H - mH) / 2;
-  bctx.drawImage(mazzoImg, mX, mY, mW, mH);
-
-  // Zona teal adattata
+  // Zona verde (teal) del mazzo — coordinate calcolate dall'analisi dell'immagine:
+  // teal x: 37.4%..81.1%, y: 25.4%..64.2% (relativi all'immagine originale)
+  // Le trasliamo alle coordinate canvas dopo la scala
   const tealLeft  = mX + mW * 0.374;
   const tealRight = mX + mW * 0.811;
   const tealTop   = mY + mH * 0.254;
   const tealBot   = mY + mH * 0.642;
   const tW = tealRight - tealLeft;
-  const tH = tealBot - tealTop;
+  const tH = tealBot   - tealTop;
 
-  // 5 posizioni fiori scalate
-  const flowerSize = 130 * (W/480); // scala fiori proporzionalmente
+  // 5 posizioni a ventaglio DENTRO la zona teal
+  const flowerSize = 130;
   const positions = [
-    { cx: tealLeft + tW*0.18, cy: tealTop + tH*0.72 },
-    { cx: tealLeft + tW*0.25, cy: tealTop + tH*0.35 },
-    { cx: tealLeft + tW*0.50, cy: tealTop + tH*0.18 },
-    { cx: tealLeft + tW*0.75, cy: tealTop + tH*0.45 },
-    { cx: tealLeft + tW*0.52, cy: tealTop + tH*0.80 },
+    { cx: tealLeft + tW*0.18, cy: tealTop + tH*0.72 },  // sinistra bassa
+    { cx: tealLeft + tW*0.25, cy: tealTop + tH*0.35 },  // sinistra alta
+    { cx: tealLeft + tW*0.50, cy: tealTop + tH*0.18 },  // centro cima
+    { cx: tealLeft + tW*0.75, cy: tealTop + tH*0.45 },  // destra alta
+    { cx: tealLeft + tW*0.52, cy: tealTop + tH*0.80 },  // destra bassa
   ];
   const rots = [-0.32, -0.15, 0, 0.15, 0.32];
 
-  const imgs = await Promise.all(bouquetSelected.map(f=>loadImg(f.img)));
+  const imgs=await Promise.all(bouquetSelected.map(f=>loadImg(f.img)));
   for(let i=0;i<imgs.length;i++){
     bctx.save();
     bctx.translate(positions[i].cx, positions[i].cy);
     bctx.rotate(rots[i]);
-    bctx.shadowColor='rgba(0,0,0,0.22)';
-    bctx.shadowBlur=14;
-    bctx.shadowOffsetY=5;
-    bctx.drawImage(imgs[i], -flowerSize/2, -flowerSize/2, flowerSize, flowerSize);
+    bctx.shadowColor='rgba(0,0,0,0.22)'; bctx.shadowBlur=14; bctx.shadowOffsetY=5;
+    bctx.drawImage(imgs[i],-flowerSize/2,-flowerSize/2,flowerSize,flowerSize);
     bctx.restore();
   }
 }
+
 async function saveBouquet(){
   await renderBouquet();
   const msg=bouquetMsg.value.trim();
