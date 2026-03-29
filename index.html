@@ -181,25 +181,22 @@ body {
   display: flex; align-items: center; justify-content: center; z-index: 20;
 }
 @media (max-width: 480px) {
-
-  /* === Bottoni principali: uno sotto l'altro e centrati === */
+  /* Bottoni principali in colonna */
   #btn-row-main {
     display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    gap: 14px !important;
-    bottom: 70px !important;       /* più spazio dal fondo */
-    white-space: normal !important; /* fondamentale per la colonna */
+    flex-direction: column !important;  /* uno sotto l'altro */
+    align-items: center !important;     /* centrati orizzontalmente */
+    gap: 14px !important;               /* spazio tra i bottoni */
+    bottom: 70px !important;            /* distanza dal fondo */
+    left: 50% !important;
+    transform: translateX(-50%) !important;
   }
 
   .main-btn {
-    padding: 14px 28px !important;  /* bottoni più grandi e comodi da toccare */
-    font-size: 16px !important;     
-    width: 90% !important;          /* larghezza ampia ma con margine */
-    text-align: center !important;
-    line-height: 1.4 !important;    /* testo centrato verticalmente */
-    box-sizing: border-box !important;
-    margin: 0 auto !important;      /* centrato */
+    width: 90% !important;            /* larghezza comoda su mobile */
+    text-align: center !important;    
+    padding: 14px 28px !important;    /* più grandi da toccare */
+    font-size: 16px !important;       
   }
 
   /* === Lavagnetta ridimensionata === */
