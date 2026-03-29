@@ -181,14 +181,15 @@ body {
   display: flex; align-items: center; justify-content: center; z-index: 20;
 }
 @media (max-width: 480px) {
-
-  /* === Bottoni principali più alti e grandi === */
-  #btn-row-main {
-    bottom: 70px !important;        /* ancora più spazio dal fondo */
-    gap: 14px !important;           
-    flex-direction: column !important; 
-    align-items: center !important;
+  /* Bottone "Create your bouquet" centrato correttamente */
+  #btn-create-bouquet {
+    width: 90% !important;         /* larghezza uniforme */
+    padding: 14px 0 !important;    /* padding verticale sufficiente, orizzontale automatico */
+    text-align: center !important; /* testo centrato */
+    box-sizing: border-box !important; /* include padding e bordo nella larghezza */
+    margin: 0 auto !important;     /* centraggio orizzontale */
   }
+
   .main-btn {
     padding: 14px 28px !important;  /* bottoni più grandi e comodi da toccare */
     font-size: 16px !important;     
