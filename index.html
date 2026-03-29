@@ -181,19 +181,17 @@ body {
   display: flex; align-items: center; justify-content: center; z-index: 20;
 }
 @media (max-width: 480px) {
-/* Bottone "Create your bouquet" più largo e testo centrato */
-#btn-create-bouquet {
-  width: 100% !important;           /* prende tutta la larghezza disponibile */
-  max-width: 340px !important;      /* optional, mantiene un limite */
-  padding: 16px 20px !important;    /* più alto e comodo da cliccare */
-  display: flex !important;
-  justify-content: center !important; /* centra orizzontalmente il testo */
-  align-items: center !important;     /* centra verticalmente il testo */
-  text-align: center !important;
-  line-height: 1.4 !important;
-  margin: 0 auto !important;          /* centrato nel layout */
-  border-radius: 50px !important;     /* stesso stile degli altri bottoni */
-}
+  /* Bottoni principali in colonna */
+  #btn-row-main {
+    display: flex !important;
+    flex-direction: column !important;  /* uno sotto l'altro */
+    align-items: center !important;     /* centrati orizzontalmente */
+    gap: 14px !important;               /* spazio tra i bottoni */
+    bottom: 70px !important;            /* distanza dal fondo */
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+  }
+
   .main-btn {
     width: 90% !important;            /* larghezza comoda su mobile */
     text-align: center !important;    
@@ -278,7 +276,7 @@ body {
 
   /* === Bottone "Create your bouquet" centrato bene === */
   #btn-create-bouquet {
-    width: 90% !important;
+    width: 130% !important;
     text-align: center !important;
     margin: 0 auto !important;
   }
@@ -298,8 +296,8 @@ body {
   <div id="bouquet-hint">💐 Click 5 flowers (<span id="bouquet-count">0</span>/5)</div>
   <div id="tooltip"></div>
   <div id="btn-row-main">
-    <button class="main-btn" id="btn-add">🌸 Add your flower</button>
-    <button class="main-btn bouq-btn" id="btn-bouquet-mode">💐 Create your bouquet</button>
+    <button class="main-btn" id="btn-add">🌸Add your flower</button>
+    <button class="main-btn bouq-btn" id="btn-bouquet-mode">💐Create a bouquet</button>
   </div>
 </div>
 
