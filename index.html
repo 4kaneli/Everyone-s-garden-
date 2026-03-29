@@ -198,23 +198,22 @@ body {
     width: 100% !important;
     height: auto !important;
   }
-  #canvas-wrap {
-  width: 90vw;       /* canvas più largo e scalato */
-  height: 66vw;      /* mantiene proporzioni simili */
+#canvas-wrap {
+  width: 90vw;
+  height: calc(90vw * 0.73); /* 300/410 ≈ 0.73 per mantenere proporzioni */
 }
-
 #draw-canvas {
   width: 100% !important;
-  height: 100% !important;
+  height: 100% !important;   /* prende tutta l’altezza del wrap */
   touch-action: none;
 }
 
   /* Pulsanti principali sotto al prato */
-  #btn-row-main {
-    bottom: 25vw;        /* più alto su mobile */
-    flex-direction: column;
-    gap: 10px;
-  }
+ #btn-row-main {
+  bottom: 12vw;        /* più alto su mobile */
+  flex-direction: column;
+  gap: 10px;
+}
   .main-btn {
     width: 80vw;         /* più grandi e touch-friendly */
     text-align: center;
@@ -225,10 +224,7 @@ body {
     width: 95vw;
     padding: 18px;
   }
-  #draw-canvas {
-    width: 100% !important;
-    height: auto !important;
-  }
+
 }
 </style>
 </head>
