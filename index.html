@@ -198,10 +198,20 @@ body {
     width: 100% !important;
     height: auto !important;
   }
+  #canvas-wrap {
+  width: 90vw;       /* canvas più largo e scalato */
+  height: 66vw;      /* mantiene proporzioni simili */
+}
+
+#draw-canvas {
+  width: 100% !important;
+  height: 100% !important;
+  touch-action: none;
+}
 
   /* Pulsanti principali sotto al prato */
   #btn-row-main {
-    bottom: 12vw;        /* più alto su mobile */
+    bottom: 25vw;        /* più alto su mobile */
     flex-direction: column;
     gap: 10px;
   }
@@ -387,7 +397,10 @@ function drawGhost() {
 function getPos(e) {
   const r = canvas.getBoundingClientRect();
   const s = e.touches ? e.touches[0] : e;
-  return { x: s.clientX - r.left, y: s.clientY - r.top };
+  // scala in base alle dimensioni effettive
+  const scaleX = canvas.width / r.width;
+  const scaleY = canvas.height / r.height;
+  return { x: (s.clientX - r.left) * scaleX, y: (s.clientY - r.top) * scaleY };
 }
 canvas.addEventListener('mousedown', e => {
   drawing = true; const p=getPos(e); lastX=p.x; lastY=p.y;
