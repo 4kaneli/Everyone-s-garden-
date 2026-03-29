@@ -183,67 +183,74 @@ body {
 /* === MOBILE VERSIONE (max-width 480px) === */
 @media (max-width: 480px) {
 
-  /* Bottoni principali più in alto, spazio dal fondo */
+  /* Bottoni principali più in alto, uno sopra l'altro */
   #btn-row-main {
-    bottom: 60px; /* aumenta lo spazio dal fondo */
-    gap: 10px;
-    flex-direction: column; /* metti i bottoni uno sopra l'altro */
+    bottom: 60px;       /* spazio dal fondo */
+    gap: 12px;
+    flex-direction: column;
     align-items: center;
   }
   .main-btn {
-    padding: 10px 20px;
-    font-size: 14px;
-    width: 80%; /* bottoni più larghi ma dentro lo schermo */
+    padding: 12px 24px; /* più grande e cliccabile */
+    font-size: 15px;    /* testo più leggibile */
+    width: 85%;         /* dentro lo schermo */
+    text-align: center;  /* centratura testo */
   }
 
   /* Lavagnetta ridimensionata */
   #lavagnetta {
-    width: 90vw;
-    max-width: 90vw;
-    padding: 16px;
+    width: 92vw;
+    max-width: 92vw;
+    padding: 18px;
   }
   #lav-title {
     font-size: 16px;
+    text-align: center;
   }
-  #nome-input, #bouquet-msg-input, #draw-canvas {
-    font-size: 13px;
+
+  /* Input e canvas */
+  #nome-input, #bouquet-msg-input {
+    font-size: 14px;
   }
   #draw-canvas {
-    width: 260px !important;
-    height: 180px !important;
+    width: 280px !important;
+    height: 250px !important; /* più alto per disegno */
+    border-radius: 12px;
   }
 
   /* Palette più piccola */
   .color-btn {
-    width: 25px;
-    height: 25px;
+    width: 28px;
+    height: 28px;
   }
 
+  /* Pulsanti nella lavagnetta */
   #btn-row button {
-    font-size: 13px;
-    padding: 8px 12px;
+    font-size: 14px;
+    padding: 9px 14px;
   }
 
   /* Overlay bouquet ridimensionato */
   #bouquet-panel {
-    width: 90vw;
-    max-width: 90vw;
-    padding: 18px;
+    width: 92vw;
+    max-width: 92vw;
+    padding: 20px;
   }
   #bouquet-title {
     font-size: 18px;
+    text-align: center;
   }
   #bouquet-canvas {
     width: 320px !important;
     height: 300px !important;
   }
   #bouquet-msg-input {
-    font-size: 13px;
-    padding: 8px 10px;
+    font-size: 14px;
+    padding: 9px 12px;
   }
   #bouquet-btns button {
-    font-size: 13px;
-    padding: 8px 10px;
+    font-size: 14px;
+    padding: 9px 12px;
   }
 
   /* Tooltip più piccolo */
@@ -263,9 +270,7 @@ body {
     font-size: 12px;
     padding: 4px 10px;
   }
-
 }
-
 </style>
 </head>
 <body>
