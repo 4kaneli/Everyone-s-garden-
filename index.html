@@ -181,29 +181,28 @@ body {
   display: flex; align-items: center; justify-content: center; z-index: 20;
 }
 @media (max-width: 480px) {
-  /* Bottoni principali in colonna */
+  /* Bottoni principali: uno sotto l'altro e centrati */
   #btn-row-main {
-    display: flex !important;
-    flex-direction: column !important;  /* uno sotto l'altro */
-    align-items: center !important;     /* centrati orizzontalmente */
-    gap: 14px !important;               /* spazio tra i bottoni */
-    bottom: 70px !important;            /* distanza dal fondo */
-    left: 50% !important;
-    transform: translateX(-50%) !important;
+    flex-direction: column !important; /* mette i bottoni in verticale */
+    align-items: center !important;    /* centraggio orizzontale */
+    gap: 12px !important;              /* spazio tra i bottoni */
+    bottom: 90px !important;           /* distanza dal fondo */
   }
 
   .main-btn {
-    width: 90% !important;            /* larghezza comoda su mobile */
-    text-align: center !important;    
-    padding: 14px 28px !important;    /* più grandi da toccare */
-    font-size: 16px !important;       
+    padding: 15px 29px !important;  /* bottoni più grandi e comodi da toccare */
+    font-size: 16px !important;     
+    width: 120% !important;          /* larghezza più ampia sullo schermo */
+    text-align: center !important;
+    line-height: 1.4 !important;    /* testo centrato verticalmente */
+    box-sizing: border-box !important;
   }
 
   /* === Lavagnetta ridimensionata === */
   #lavagnetta {
     width: 95vw !important;
     max-width: 95vw !important;
-    padding: 22px !important;
+    padding: 20px !important;
   }
   #lav-title {
     font-size: 17px !important;
@@ -212,11 +211,11 @@ body {
 
   /* === Input e canvas di disegno più grandi === */
   #draw-canvas {
-    width: 320px !important;
-    height: 280px !important; 
+    width: 320px !important;        /* più largo */
+    height: 280px !important;       /* più alto */
     border-radius: 12px !important;
     display: block !important;
-    margin: 0 auto !important; 
+    margin: 0 auto !important;      /* centrato */
   }
   #nome-input, #bouquet-msg-input {
     font-size: 15px !important;
@@ -272,13 +271,6 @@ body {
   #bouquet-hint {
     font-size: 12px !important;
     padding: 4px 10px !important;
-  }
-
-  /* === Bottone "Create your bouquet" centrato bene === */
-  #btn-create-bouquet {
-    width: 130% !important;
-    text-align: center !important;
-    margin: 0 auto !important;
   }
 
 }
